@@ -1,0 +1,11 @@
+{
+    "conditions": [
+        {
+          "condition": "forge:loot_table_id",
+          "loot_table_id": "minecraft:chests/stronghold_library"
+        }
+      ],
+      "addition" : "celestemod:dash_essence_item",
+      "type" : "celestemod:dash_essence_in_stronghold"
+
+}

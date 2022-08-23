@@ -1,0 +1,7 @@
+{
+    "pack": {
+        "description": "Implements a few mechanics from the game Celeste.",
+        "pack_format" : 4
+
+    }
+}

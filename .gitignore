@@ -1,0 +1,16 @@
+# gradle stuff
+build
+.gradle
+
+# VS Code stuff
+.vscode
+bin
+
+run
+
+# Forge stuff
+src/generated
+src/test
+
+# Mac Finder stuff, for whatever reason.
+.DS_Store
