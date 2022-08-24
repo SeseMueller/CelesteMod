@@ -7,6 +7,7 @@ import com.die_waechter.celestemod.common.dashEssenceItem;
 import com.die_waechter.celestemod.common.dash.dashDirections;
 import com.die_waechter.celestemod.common.packets.CelestePacketHandler;
 import com.die_waechter.celestemod.common.packets.WaveDashPacket;
+import com.mojang.math.Vector3f;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
@@ -32,8 +33,6 @@ public class onDash {
         public static Boolean PRESSESUSELASTTICK = false;
         public static Boolean PRESSEDJUMPLASTTICK = false;
 
-        // Is this really neccessary?
-        // Answer: Yes. This is because the tickhandler is in common and this should not be executed on the server.
         @SubscribeEvent
         public static void clientTick(ClientTickEvent event){
 
@@ -51,7 +50,7 @@ public class onDash {
             if (keyHandler.dashKeyMapping != null && keyHandler.dashKeyMapping.isDown()) { //Why can this even BE null? I don't know.
                 if (!WASPRESSEDLASTTICK){
                     WASPRESSEDLASTTICK = true;
-                    celestemod.ClientDH.dash(event, getDashDirection(event));   
+                    celestemod.ClientDH.dash(event, getDashDirection());   
                 }
             }
             else if (keyHandler.dashKeyMapping != null){
@@ -63,20 +62,32 @@ public class onDash {
              (celestemod.ClientDH.dashDescriptors.get(playerUUID).isInDash && instance.player.isOnGround()) && // Player is in a dash and is on ground
              (dashDirections.isValidHyperDirection(celestemod.ClientDH.dashDescriptors.get(playerUUID).directionAsInt)) && // Player is dashing in a valid direction
              (celestemod.ClientDH.dashDescriptors.get(playerUUID).activeDashTicks >= 3)) { // Player has been in a dash for at least 3 ticks
-                celestemod.LOGGER.debug("Wave Dash:"+ celestemod.ClientDH.dashDescriptors.get(playerUUID).directionAsInt);
+                // celestemod.LOGGER.debug("Wave Dash:"+ celestemod.ClientDH.dashDescriptors.get(playerUUID).directionAsInt);
 
                 //Ends the dash and gives the player a certain velocity.
                 celestemod.ClientDH.dashDescriptors.get(playerUUID).isInDash = false;
 
+                //Potential reverse Wavedash: when the current dash direction is not 0 and different from the direction the player dashed in, use the new held direction.
+
+                int heldDirection = getDashDirection();
+
                 Vec3 direction = dashDirections.getHyperDashDirection(celestemod.ClientDH.dashDescriptors.get(playerUUID).direction);
+                celestemod.LOGGER.debug("heldDirection:"+heldDirection);
+                if (heldDirection > 3 ){ //The Player is holding a direction that isn't only up, down or nothing.
+                    Vector3f tempDirection = dashDirections.getDirection(heldDirection);
+                    tempDirection = dashDirections.applyPlayerYawToDashDirection(tempDirection, instance.player.yRotO);
+
+                    direction = new Vec3(tempDirection.x(), tempDirection.y(), tempDirection.z());
+                    direction = dashDirections.getHyperDashDirection(direction);
+                }
+
 
                 direction = direction.add(instance.player.getDeltaMovement());
                 instance.player.setDeltaMovement(direction);
                 //FIXME: this seems wrong.
 
                 CelestePacketHandler.INSTANCE.sendToServer(new WaveDashPacket(celestemod.ClientDH.dashDescriptors.get(playerUUID).directionAsInt));
-                //TODO: give player dash back? Is that covered by being on the ground?
-                //TODO: reverse wavedash?
+                //TODO: The Player always gets their dash back, is that too much?
             }
             
             //Check for dash Essence use.
@@ -99,7 +110,7 @@ public class onDash {
             PRESSEDJUMPLASTTICK = options.keyJump.isDown();
         }
 
-        private static int getDashDirection(ClientTickEvent event){
+        private static int getDashDirection(){
             
             int direction = 0;
             
