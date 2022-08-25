@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import com.die_waechter.celestemod.celestemod;
 import com.die_waechter.celestemod.common.dashEssenceItem;
+import com.die_waechter.celestemod.common.doubleDashEssenceItem;
 import com.die_waechter.celestemod.common.dash.dashDirections;
 import com.die_waechter.celestemod.common.packets.CelestePacketHandler;
 import com.die_waechter.celestemod.common.packets.WaveDashPacket;
@@ -104,6 +105,18 @@ public class onDash {
                         options.keyDown.consumeClick();
                     }
                 }
+
+                //Check for double dash essence use.
+                if (heldItem.getItem() instanceof doubleDashEssenceItem && !PRESSESUSELASTTICK){
+                    //Player is holding dash essence and is pressing the use key.
+                    //The use key action is consumed and the dash essence is used.
+                    InteractionResult result = tryConsumeDoubleDashEssence(instance.player, heldItem);
+                    if (result == InteractionResult.CONSUME){
+                        //Dash essence was used.
+                        options.keyDown.consumeClick();
+                        options.keyDown.consumeClick();
+                    }
+                }
             }
 
             PRESSESUSELASTTICK = options.keyUse.isDown(); //Update on end so that the value is correct for the next tick.
@@ -162,6 +175,30 @@ public class onDash {
 
             return InteractionResult.PASS;
 
+        }
+
+        private static InteractionResult tryConsumeDoubleDashEssence(Player player, ItemStack stack){
+
+            // If the player already has a dash count of 1, increase the dash count by 1.
+            // Else, tell him that he is already at full power or that he lacks the power to increase it further.
+            if (celestemod.ClientDH.getMaxDashes(player.getUUID()) == 2) {
+                player.sendMessage(new TextComponent("You feel that your power is already at a maximum."), player.getUUID());
+                return InteractionResult.CONSUME;
+            }
+
+            if (celestemod.ClientDH.getMaxDashes(player.getUUID()) == 0) {
+                player.sendMessage(new TextComponent("You feel that your power is too weak to be increased by this item."), player.getUUID());
+                return InteractionResult.CONSUME;
+            }
+
+            if (celestemod.ClientDH.getMaxDashes(player.getUUID()) == 1) {
+                celestemod.ClientDH.setMaxDashes(player.getUUID(), 2);
+                stack.setCount(0);
+                player.sendMessage(new TextComponent("You feel that your power has increased to a maximum."), player.getUUID());
+                return InteractionResult.CONSUME;
+            }
+
+            return InteractionResult.PASS;
         }
 
 }

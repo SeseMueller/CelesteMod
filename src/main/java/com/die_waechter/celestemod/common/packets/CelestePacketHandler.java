@@ -30,5 +30,6 @@ public class CelestePacketHandler {
         INSTANCE.registerMessage(id++, DashPacket.class, DashPacket::encode, DashPacket::decode, DashPacket::handle);
         INSTANCE.registerMessage(id++, LoginDashPacket.class, LoginDashPacket::encode, LoginDashPacket::decode, LoginDashPacket::handle);
         INSTANCE.registerMessage(id++, WaveDashPacket.class, WaveDashPacket::encode, WaveDashPacket::decode, WaveDashPacket::handle);
+        INSTANCE.registerMessage(id++, CommandSetPacket.class, CommandSetPacket::encode, CommandSetPacket::decode, CommandSetPacket::handle);
     }
 }

@@ -1,0 +1,6 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "celestemod:items/double_dash_essence_item"
+    }
+}

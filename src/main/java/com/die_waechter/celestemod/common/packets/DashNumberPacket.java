@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 
 import com.die_waechter.celestemod.celestemod;
 import com.die_waechter.celestemod.common.dashEssenceItem;
+import com.die_waechter.celestemod.common.doubleDashEssenceItem;
 import com.die_waechter.celestemod.common.dash.dHHelper;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -52,8 +53,8 @@ public class DashNumberPacket {
                 Item heldItem = player.getMainHandItem().getItem();
 
                 //If the heldStack is a dash Essence, remove it.
-                if (!(heldItem instanceof dashEssenceItem)){
-                    celestemod.LOGGER.warn("Player " + player.getName() + " tried to set the number of dashes to " + safeNumberOfDashes + " but he is not holding a dash Essence.");
+                if ((!(heldItem instanceof dashEssenceItem))&&(!(heldItem instanceof doubleDashEssenceItem))){
+                    celestemod.LOGGER.warn("Player " + player.getName() + " tried to set the number of dashes to " + safeNumberOfDashes + " but he is not holding either dash Essence.");
                 } else {
                     //Remove the dash Essence from the player. 
                     player.getMainHandItem().setCount(0);

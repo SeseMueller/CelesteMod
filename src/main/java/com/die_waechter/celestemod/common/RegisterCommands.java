@@ -2,6 +2,8 @@ package com.die_waechter.celestemod.common;
 
 import com.die_waechter.celestemod.celestemod;
 import com.die_waechter.celestemod.common.dash.dHHelper;
+import com.die_waechter.celestemod.common.packets.CelestePacketHandler;
+import com.die_waechter.celestemod.common.packets.CommandSetPacket;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -47,7 +49,7 @@ public class RegisterCommands {
         private static int getDash(CommandContext<CommandSourceStack> command){
             if (command.getSource().getEntity() instanceof Player) {
                 Player player = (Player) command.getSource().getEntity();
-                int numDashes = celestemod.ServerDH.getDashes(player.getUUID());
+                int numDashes = celestemod.ClientDH.getDashes(player.getUUID());
                 player.sendMessage(new TextComponent("You have " + numDashes + " dashes."), player.getUUID());
                 return Command.SINGLE_SUCCESS;
             } else {
@@ -61,7 +63,11 @@ public class RegisterCommands {
             if (command.getSource().getEntity() instanceof Player) {
                 Player player = (Player) command.getSource().getEntity();
                 int numDashes = command.getArgument("numDashes", Integer.class);
-                dHHelper.setMaxDashes(player.getUUID(), numDashes);
+                celestemod.ClientDH.setMaxDashes(player.getUUID(), numDashes);
+                //Sends a packet to the server to set the max dashes for the player.
+                CelestePacketHandler.INSTANCE.sendToServer(new CommandSetPacket(numDashes, player.getUUID()));
+
+                // dHHelper.setMaxDashes(player.getUUID(), numDashes);
                 player.sendMessage(new TextComponent("You now have " + numDashes + " dashes."), player.getUUID());
                 return Command.SINGLE_SUCCESS;
             } else {
