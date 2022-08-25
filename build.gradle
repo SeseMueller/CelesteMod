@@ -16,7 +16,7 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 
 
-version = '1.1.3'
+version = '1.2.0'
 group = 'com.die_wachter' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'celestemod'
 
@@ -198,7 +198,7 @@ jar {
                 "Specification-Vendor"    : "Die_Waechter", 
                 "Specification-Version"   : "1", // We are version 1 of ourselves
                 "Implementation-Title"    : project.name,
-                "Implementation-Version"  : "1.1.3",
+                "Implementation-Version"  : "1.2.0",
                 "Implementation-Vendor"   : "Die_Waechter",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])

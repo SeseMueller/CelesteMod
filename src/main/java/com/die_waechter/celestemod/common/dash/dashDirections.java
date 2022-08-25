@@ -7,9 +7,6 @@ import net.minecraft.world.phys.Vec3;
 
 public class dashDirections {
 
-    public static float WAVESPEEDMULTIPLIER = 2.0f;
-    public static float WAVEHEIGHT = 0.5f;
-    
     public static int UP = 1;
     public static int DOWN = 2;
     public static int LEFT = 3;
@@ -81,10 +78,10 @@ public class dashDirections {
         // Remove all y components from the direction.
         direction = direction.subtract(0, direction.y(), 0);
         direction = direction.normalize();
-        direction = direction.scale(WAVESPEEDMULTIPLIER);
+        direction = direction.scale(dashConfig.WAVESPEEDMULTIPLIER.get());
 
         // Add a small y component to the direction, to give the player a bit upwards velocity.
-        direction = direction.add(0, WAVEHEIGHT, 0);
+        direction = direction.add(0, dashConfig.WAVEHEIGHT.get(), 0);
         
         return direction;
         

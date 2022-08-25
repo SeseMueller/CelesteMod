@@ -73,7 +73,7 @@ public class onDash {
                 int heldDirection = getDashDirection();
 
                 Vec3 direction = dashDirections.getHyperDashDirection(celestemod.ClientDH.dashDescriptors.get(playerUUID).direction);
-                celestemod.LOGGER.debug("heldDirection:"+heldDirection);
+                // celestemod.LOGGER.debug("heldDirection:"+heldDirection);
                 if (heldDirection > 3 ){ //The Player is holding a direction that isn't only up, down or nothing.
                     Vector3f tempDirection = dashDirections.getDirection(heldDirection);
                     tempDirection = dashDirections.applyPlayerYawToDashDirection(tempDirection, instance.player.yRotO);

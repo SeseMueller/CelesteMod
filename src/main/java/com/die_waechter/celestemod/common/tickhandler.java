@@ -11,9 +11,11 @@ import com.die_waechter.celestemod.server.SaveAndLoadDashMap;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.util.thread.SidedThreadGroups;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.event.server.ServerStartedEvent;
@@ -64,6 +66,24 @@ public class tickhandler {
     }
 
 
+    @SubscribeEvent
+    public static void onLivingFall(LivingFallEvent event){
+        if (event.getEntity() instanceof Player){
+            //If that player is in a dash, cancel the fall.
+            UUID uuid = event.getEntity().getUUID();
+            if (dHHelper.getDashDescriptors().get(uuid).isInDash){
+                event.setCanceled(true);
+            }
+        }
+    }
+
+
+    //Config reload event.
+    @SubscribeEvent
+    public static void onConfigLoad(ModConfigEvent.Reloading event){
+        celestemod.LOGGER.info("Config reloading...");
+        Config.register(); //Reload config.
+    }
 
 
     @SubscribeEvent

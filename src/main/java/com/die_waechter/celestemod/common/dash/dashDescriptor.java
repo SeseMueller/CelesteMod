@@ -12,8 +12,6 @@ public class dashDescriptor {
     // What direction the player is dashing in,
     // As well as the number of ticks the player has not been on the ground for.
 
-    public static float DASHSPEED = 0.7f; //The speed at which the player moves when dashing, in blocks per second.
-
     public int numberOfDashes;
     public int maxNumberOfDashes;
     public int activeDashTicks;
@@ -62,7 +60,7 @@ public class dashDescriptor {
             this.direction = new Vec3(this.dashDirection.x(), this.dashDirection.y(), this.dashDirection.z());
             
             //Changes the speed of the dash.
-            this.direction.scale(DASHSPEED);
+            this.direction = this.direction.scale(dashConfig.DASHSPEED.get());
             
             this.numberOfDashes--; 
             

@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 
 import com.die_waechter.celestemod.client.ClientDashHandler;
+import com.die_waechter.celestemod.common.Config;
 import com.die_waechter.celestemod.common.registerItems;
 import com.die_waechter.celestemod.common.tickhandler;
 import com.die_waechter.celestemod.common.dash.dashHandler;
@@ -29,6 +30,8 @@ public class celestemod {
         MinecraftForge.EVENT_BUS.register(tickhandler.class);
 
         CelestePacketHandler.registerPackets();
+
+        Config.register();
 
         //Loads the client side dashHandler, if the client is running.
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> celestemod::loadClientDH);
