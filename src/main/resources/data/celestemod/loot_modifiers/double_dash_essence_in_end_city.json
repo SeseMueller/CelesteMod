@@ -1,0 +1,11 @@
+{
+    "conditions": [
+        {
+          "condition": "forge:loot_table_id",
+          "loot_table_id": "minecraft:chests/end_city_treasure"
+        }
+      ],
+      "addition" : "celestemod:double_dash_essence_item",
+      "type" : "celestemod:double_dash_essence_in_end_city"
+
+}

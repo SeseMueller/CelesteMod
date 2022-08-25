@@ -17,7 +17,9 @@ public class LootTableHandler {
     @SubscribeEvent
     public static void registerModifierSerializers(@Nonnull final RegistryEvent.Register<GlobalLootModifierSerializer<?>> event) {
         celestemod.LOGGER.info("Registering LootModifierSerializers...");
+
         event.getRegistry().register(new DashEssenceInStronghold.Serializer().setRegistryName(new ResourceLocation(celestemod.MODID, "dash_essence_in_stronghold")));
+        event.getRegistry().register(new DoubleDashEssenceInEndCity.Serializer().setRegistryName(new ResourceLocation(celestemod.MODID, "double_dash_essence_in_end_city")));
 
     }
 }

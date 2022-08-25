@@ -1,6 +1,7 @@
 {
     "replace" : false,
     "entries" : [
-        "celestemod:dash_essence_in_stronghold"
+        "celestemod:dash_essence_in_stronghold",
+        "celestemod:double_dash_essence_in_end_city"
     ]
 }
