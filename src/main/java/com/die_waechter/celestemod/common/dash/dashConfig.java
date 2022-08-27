@@ -7,6 +7,8 @@ public class dashConfig {
     public static ForgeConfigSpec.DoubleValue DASHSPEED;
     public static ForgeConfigSpec.DoubleValue WAVESPEEDMULTIPLIER;
     public static ForgeConfigSpec.DoubleValue WAVEHEIGHT;
+    public static ForgeConfigSpec.DoubleValue SUPERHEIGHT;
+    public static ForgeConfigSpec.DoubleValue SUPERSPEEDMULTIPLIER;
     
 
     public static void registerDashConfig(ForgeConfigSpec.Builder COMMON_BUILDER) {
@@ -23,6 +25,14 @@ public class dashConfig {
         WAVEHEIGHT = COMMON_BUILDER
             .comment("The height the player gets on wavedash.")
             .defineInRange("Wavedash Height", 0.5, 0.1, 10.0);
+
+        SUPERSPEEDMULTIPLIER = COMMON_BUILDER
+            .comment("The speed increase the player gets on superdash.")
+            .defineInRange("Superdash Speed Multiplier", 1.5, 0.1, 10.0);
+
+        SUPERHEIGHT = COMMON_BUILDER
+            .comment("The height the player gets on superdash.")
+            .defineInRange("Superdash Height", 1.0, 0.1, 10.0);
 
         COMMON_BUILDER.pop();
     }

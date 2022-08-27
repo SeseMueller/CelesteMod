@@ -1,5 +1,6 @@
 package com.die_waechter.celestemod.common.dash;
 
+import com.die_waechter.celestemod.celestemod;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Vector3f;
 
@@ -87,6 +88,28 @@ public class dashDirections {
         
     }
 
+    public static Vec3 getSuperDashDirection(Vec3 direction) {
+
+        direction = direction.scale(dashConfig.SUPERSPEEDMULTIPLIER.get());
+
+        // Add a small y component to the direction, to give the player a bit upwards velocity.
+        // direction = direction.add(0, dashConfig.SUPERHEIGHT.get(), 0);
+        direction = direction.add(0.0d, 10.0d, 0.0d);
+        // For anyone who came here wondering why their player is not getting the height boost from their code or whatever.
+        // I looked into the code and the only senseable place this behaviour could originate from is the player's JUMP FUNCTION.
+        // It sets the player's y velocity, since it expects it to be 0 or negligible.
+        // This means that any xz movement will be applied as expected, but the y velocity will be gotten from the jump function.
+        // This only happens WHEN THE PLAYER IS JUMPING ON THE SAME TICK YOU CALL setDeltaMovement.
+        // My solution is to wait a tick before calling setDeltaMovement, since the jump function shouldn't be called again.
+        // TODO: Actually fix this.
+        // TODO: Actually fix this.
+        // TODO: Actually fix this.
+
+        celestemod.LOGGER.debug("Super dash direction: "+ direction);
+        
+        return direction;
+        
+    }
 
     public static boolean isValidHyperDirection(int dashDirection){
         // There are 8 valid down-diagonal directions for the player to hyper OR wave dash.
@@ -98,4 +121,14 @@ public class dashDirections {
         }
         return false;
     }
+
+
+    public static boolean isValidSuperDirection(int dashDirectionAsInt) {
+        // There are 8 valid direction, that are in the plane. (no up/down)
+        // Since Up is represented as 1 and Down as 2, all directions that are % 3 == 0 are valid.
+        return (dashDirectionAsInt % 3 == 0) && (dashDirectionAsInt != 0) && (dashDirectionAsInt < 27);
+    }
+
+
+    
 }

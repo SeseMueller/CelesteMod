@@ -252,6 +252,54 @@ public abstract class dashHandler {
         
     }
 
+    //Strict Server-side
+    public void superDash(UUID uuid, int dashDirectionAsInt) {
+        // celestemod.LOGGER.debug("Received superdash event from client:"+dashDirectionAsInt);
+        
+        if (!dashDescriptors.containsKey(uuid)){
+            dashDescriptors.put(uuid, new dashDescriptor());
+        }
+        
+        //Checks if the player could have superdashed.
+        if (!(dashDescriptors.get(uuid).isInDash)){
+            celestemod.LOGGER.debug("Player is not in dash, cancelling superdash.");
+            return;
+        }
+        if (dashDescriptors.get(uuid).activeDashTicks < 3){
+            return;
+        }
+        if (!dashDirections.isValidSuperDirection(dashDirectionAsInt)){
+            return;
+        }
+        
+        ServerPlayer player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(uuid);
+        
+        if (player == null){
+            celestemod.LOGGER.debug("Player " + uuid + " is offline. superdash canceled.");
+            return;
+        }
+        
+        if(!player.isOnGround()){
+            return;
+        }
+         
+        //The player can superdash.
+        //End the current dash.
+        dashDescriptors.get(uuid).isInDash = false;
+        
+        //Apply the superdash.
+        Vec3 direction = dashDirections.getSuperDashDirection(dashDescriptors.get(uuid).direction);
+        
+        // direction.add(player.getDeltaMovement());
+        // celestemod.LOGGER.debug("superdashing in direction:"+direction.toString()); 
+        // player.setDeltaMovement(direction);
+
+        
+        celestemod.LOGGER.debug("superdashing in direction:"+direction.toString()); 
+        player.setDeltaMovement(player.getDeltaMovement().add(direction));
+        
+    }
+
     //this function is supposed to be implemented on both sides.
     public abstract Player getPlayer(UUID uuid);
 

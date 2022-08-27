@@ -7,6 +7,7 @@ import com.die_waechter.celestemod.common.dashEssenceItem;
 import com.die_waechter.celestemod.common.doubleDashEssenceItem;
 import com.die_waechter.celestemod.common.dash.dashDirections;
 import com.die_waechter.celestemod.common.packets.CelestePacketHandler;
+import com.die_waechter.celestemod.common.packets.SuperDashPacket;
 import com.die_waechter.celestemod.common.packets.WaveDashPacket;
 import com.mojang.math.Vector3f;
 
@@ -90,6 +91,39 @@ public class onDash {
                 CelestePacketHandler.INSTANCE.sendToServer(new WaveDashPacket(celestemod.ClientDH.dashDescriptors.get(playerUUID).directionAsInt));
                 //TODO: The Player always gets their dash back, is that too much?
             }
+
+            //Check for superdash: if the player is grounded, in a dash, and presses the jump key, then try to superdash.
+            if ((options.keyJump.isDown() && !PRESSEDJUMPLASTTICK) && // Jump was pressed this tick
+            (celestemod.ClientDH.dashDescriptors.get(playerUUID).isInDash && instance.player.isOnGround()) && // Player is in a dash and is on ground
+             (dashDirections.isValidSuperDirection(celestemod.ClientDH.dashDescriptors.get(playerUUID).directionAsInt)) && // Player is dashing in a valid direction
+             (celestemod.ClientDH.dashDescriptors.get(playerUUID).activeDashTicks >= 3)) { // Player has been in a dash for at least 3 ticks
+             
+                celestemod.LOGGER.debug("Super Dash:"+ celestemod.ClientDH.dashDescriptors.get(playerUUID).directionAsInt);
+
+                //Ends the dash and gives the player a certain velocity.
+                celestemod.ClientDH.dashDescriptors.get(playerUUID).isInDash = false;
+
+                //Potential reverse Superdash: when the current dash direction is not 0 and different from the direction the player dashed in, use the new held direction.
+
+                int heldDirection = getDashDirection();
+
+                Vec3 direction = dashDirections.getSuperDashDirection(celestemod.ClientDH.dashDescriptors.get(playerUUID).direction);
+                // celestemod.LOGGER.debug("heldDirection:"+heldDirection);
+                if (heldDirection > 3 || heldDirection == dashDirections.UP){ //The Player is holding a direction that isn't only down or nothing.
+                    Vector3f tempDirection = dashDirections.getDirection(heldDirection);
+                    tempDirection = dashDirections.applyPlayerYawToDashDirection(tempDirection, instance.player.yRotO);
+
+                    direction = new Vec3(tempDirection.x(), tempDirection.y(), tempDirection.z());
+                    direction = dashDirections.getSuperDashDirection(direction);
+                }
+
+                direction = direction.add(instance.player.getDeltaMovement());
+                celestemod.LOGGER.debug("direction:"+direction);
+                instance.player.setDeltaMovement(direction);
+
+                CelestePacketHandler.INSTANCE.sendToServer(new SuperDashPacket(celestemod.ClientDH.dashDescriptors.get(playerUUID).directionAsInt));
+            }
+            
             
             //Check for dash Essence use.
             if (options.keyUse.isDown()){
