@@ -81,12 +81,14 @@ public class onDash {
 
                     direction = new Vec3(tempDirection.x(), tempDirection.y(), tempDirection.z());
                     direction = dashDirections.getHyperDashDirection(direction);
+                    // Additionally update the directionAsInt in the descriptor.
+                    celestemod.ClientDH.dashDescriptors.get(playerUUID).directionAsInt = heldDirection;
                 }
 
 
                 direction = direction.add(instance.player.getDeltaMovement());
-                instance.player.setDeltaMovement(direction);
-                //FIXME: this seems wrong.
+                // instance.player.setDeltaMovement(direction);
+                celestemod.ClientDH.velocityNextFrame = direction;
 
                 CelestePacketHandler.INSTANCE.sendToServer(new WaveDashPacket(celestemod.ClientDH.dashDescriptors.get(playerUUID).directionAsInt));
                 //TODO: The Player always gets their dash back, is that too much?
@@ -115,11 +117,15 @@ public class onDash {
 
                     direction = new Vec3(tempDirection.x(), tempDirection.y(), tempDirection.z());
                     direction = dashDirections.getSuperDashDirection(direction);
+                    // Additionally update the directionAsInt in the descriptor.
+                    celestemod.ClientDH.dashDescriptors.get(playerUUID).directionAsInt = heldDirection;
+
                 }
 
                 direction = direction.add(instance.player.getDeltaMovement());
                 celestemod.LOGGER.debug("direction:"+direction);
-                instance.player.setDeltaMovement(direction);
+                // instance.player.setDeltaMovement(direction);
+                celestemod.ClientDH.velocityNextFrame = direction;
 
                 CelestePacketHandler.INSTANCE.sendToServer(new SuperDashPacket(celestemod.ClientDH.dashDescriptors.get(playerUUID).directionAsInt));
             }

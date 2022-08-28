@@ -93,17 +93,14 @@ public class dashDirections {
         direction = direction.scale(dashConfig.SUPERSPEEDMULTIPLIER.get());
 
         // Add a small y component to the direction, to give the player a bit upwards velocity.
-        // direction = direction.add(0, dashConfig.SUPERHEIGHT.get(), 0);
-        direction = direction.add(0.0d, 10.0d, 0.0d);
+        direction = direction.add(0, dashConfig.SUPERHEIGHT.get(), 0);
+        // direction = direction.add(0.0d, 10.0d, 0.0d);
         // For anyone who came here wondering why their player is not getting the height boost from their code or whatever.
         // I looked into the code and the only senseable place this behaviour could originate from is the player's JUMP FUNCTION.
         // It sets the player's y velocity, since it expects it to be 0 or negligible.
         // This means that any xz movement will be applied as expected, but the y velocity will be gotten from the jump function.
         // This only happens WHEN THE PLAYER IS JUMPING ON THE SAME TICK YOU CALL setDeltaMovement.
         // My solution is to wait a tick before calling setDeltaMovement, since the jump function shouldn't be called again.
-        // TODO: Actually fix this.
-        // TODO: Actually fix this.
-        // TODO: Actually fix this.
 
         celestemod.LOGGER.debug("Super dash direction: "+ direction);
         

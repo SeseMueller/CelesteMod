@@ -21,6 +21,9 @@ public abstract class dashHandler {
 
     public HashMap<UUID, dashDescriptor> dashDescriptors = new HashMap<UUID, dashDescriptor>();
 
+    public Vec3 velocityNextFrame = Vec3.ZERO;
+    public Vec3 velocityNextFrame1 = Vec3.ZERO;
+
     public void initDashDescriptors(ServerLevel level) {
         celestemod.LOGGER.debug("Initializing dash descriptors");
         //Clear dash Descriptors. If this wasn't done, dashes from one server will carry over because the data wouldn't be refreshed.
@@ -82,6 +85,8 @@ public abstract class dashHandler {
     public void update(UUID uuid){
         //Updates the dashdescriptor of the entity with the given UUID
         // celestemod.LOGGER.debug("Updating dashHandler.");
+
+        
         
         if (!dashDescriptors.containsKey(uuid)){
             dashDescriptors.put(uuid, new dashDescriptor());
@@ -109,9 +114,13 @@ public abstract class dashHandler {
             }
         }
         
+        //Debug:
+        // celestemod.LOGGER.debug(currentPlayer.getDeltaMovement().toString());
+
     }
 
     public void setVelocity(UUID uuid){
+        // celestemod.LOGGER.debug("Setting velocity.");
         // Sets the velocities for a player with the given UUID.
         if (dashDescriptors.get(uuid).isInDash){
             // celestemod.LOGGER.debug("Setting velocity");
@@ -126,7 +135,17 @@ public abstract class dashHandler {
                 currentPlayer.setDeltaMovement(direction);
                 //FIXME: this seems wrong.
             }
+        } else if (velocityNextFrame != Vec3.ZERO){
+            celestemod.LOGGER.debug("Setting velocity: velocityNextFrame is: " + velocityNextFrame.toString());
+            Player currentPlayer = getPlayer(uuid);
+            if (currentPlayer != null){
+                currentPlayer.hurtMarked = true;
+                currentPlayer.setDeltaMovement(velocityNextFrame);
+            }
+            velocityNextFrame = Vec3.ZERO;
         }
+        velocityNextFrame = velocityNextFrame1;
+        velocityNextFrame1 = Vec3.ZERO;
     }
 
     public void updateGroundedness(UUID uuid){
@@ -248,7 +267,8 @@ public abstract class dashHandler {
 
         direction.add(player.getDeltaMovement());
         // celestemod.LOGGER.debug("wavedashing in direction:"+direction.toString()); 
-        player.setDeltaMovement(direction);
+        // player.setDeltaMovement(direction);
+        velocityNextFrame = direction; //This needs to be done this way because otherwise the jump function would interfere.
         
     }
 
@@ -290,13 +310,10 @@ public abstract class dashHandler {
         //Apply the superdash.
         Vec3 direction = dashDirections.getSuperDashDirection(dashDescriptors.get(uuid).direction);
         
-        // direction.add(player.getDeltaMovement());
-        // celestemod.LOGGER.debug("superdashing in direction:"+direction.toString()); 
-        // player.setDeltaMovement(direction);
-
-        
+        direction.add(player.getDeltaMovement());
         celestemod.LOGGER.debug("superdashing in direction:"+direction.toString()); 
-        player.setDeltaMovement(player.getDeltaMovement().add(direction));
+        // player.setDeltaMovement(direction);
+        velocityNextFrame = direction; //This needs to be done this way because otherwise the jump function would interfere.
         
     }
 
